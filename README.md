@@ -68,7 +68,7 @@ packages/
 3. Frontend UX
 
 - Auth screens: sign in, sign up, forgot password, reset password
-- Role-based UI using CASL
+- Role-based UI using [CASL](https://casl.js.org/v6/en/package/casl-angular) 
 - Tokens handled in SignalStore + sessionStorage
 - Interceptors for auth headers and refresh logic
 

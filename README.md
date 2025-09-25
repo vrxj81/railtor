@@ -1,90 +1,194 @@
-# Railtor
+# Railtor – Sport Supplement Webshop (MVP)
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+This repository is a monorepo managed with Nx that hosts a Rails 8 API-only backend and an Angular 20 frontend for a sport supplement webshop.
+The MVP scope starts with authentication, authorization, and role management (admin, editor, service).
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+⸻
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 📦 Workspace Overview
 
-## Finish your CI setup
+- Monorepo Tooling: Nx
+- Backend: Rails 8 (API-only)
+- Devise for authentication (JWT)
+- Pundit for authorization
+- PostgreSQL for persistence
+- RSpec for testing
+- Frontend: Angular 20
+- Zoneless change detection (provideZoneChangeDetection)
+- Standalone components with ApplicationConfig
+- Angular Signals for state and derived data
+- NgRx SignalStore for feature state management
+- Standards:
+    - Commit messages, generators, formatting, and linting follow Nx defaults
+    - Prettier (TS) + ESLint rules for frontend
+    - RuboCop for backend
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/LIALbn9Lot)
-
-
-## Generate a library
-
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
-
-## Run tasks
-
-To build the library use:
-
-```sh
-npx nx build pkg1
-```
-
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+## 🗂️ Project Structure
 
 ```
-npx nx release
+apps/
+  web/        # Angular frontend
+  api/        # Rails API-only backend
+packages/
+  <domain>/feature-*   # UI flows
+  <domain>/data-access # HTTP clients + SignalStores
+  <domain>/ui-*        # Presentational components
+  shared/              # Cross-cutting utilities (styles, models, utils)
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+- apps/: deployable artifacts (frontend and backend)
+- packages/: shared libraries, organized by domain and type
+- Nx enforced boundaries ensure feature/data-access/ui separation
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+⸻
 
-## Keep TypeScript project references up to date
+## 🔑 MVP Scope
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+### Roles
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+- Admin: full access, including user and system management
+- Editor: manage products, variants, categories, coupons, and inventory
+- Service: view and update order status, manage notes, customer support
 
-```sh
-npx nx sync
+### Features
+
+1. Authentication & Authorization
+
+- Sign up, sign in, sign out
+- JWT access tokens (15m) + rotating refresh tokens (14d)
+- Password reset flow (forgot + reset)
+- Role-based access (Pundit + Angular guards)
+
+2. Security
+
+- Rate limiting with rack-attack
+- Brute force lockout (5 failed attempts → temporary lock)
+- Audit log for sign-in, reset, and role-related actions
+
+3. Frontend UX
+
+- Auth screens: sign in, sign up, forgot password, reset password
+- Role-based UI using CASL
+- Tokens handled in SignalStore + sessionStorage
+- Interceptors for auth headers and refresh logic
+
+4. Backend
+
+- User model with roles (enum)
+- Devise for auth, JWT tokens for API
+- Pundit policies for resource access
+- Request specs for auth flows
+
+⸻
+
+## ⚙️ Setup & Installation
+
+### Requirements
+
+- Node.js 20+
+- yarn
+- Ruby 3.4+
+- PostgreSQL 15+
+- Nx CLI (npm i -g nx)
+
+## Install
+
+```bash
+# Clone repo
+git clone <repo-url>
+cd railtor
+
+# Install frontend deps
+yarn install
+
+# Install backend deps
+cd apps/api
+bundle install
+
+# Setup DB
+bin/rails db:setup
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+⸻
 
-```sh
-npx nx sync:check
+## ▶️ Development
+
+### Start frontend (Angular)
+
+```bash
+nx serve web
+# → http://localhost:4200
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+### Start backend (Rails API)
 
+```bash
+nx serve api
+# → http://localhost:3000
+```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Start both together
 
-## Install Nx Console
+```bash
+nx run-many --target=serve --projects=web,api
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+⸻
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🔄 API Contract (Auth v1)
 
-## Useful links
+|Endpoint|Method| Description
+|/auth/sign_up|POST|Register new user
+|/auth/sign_in|POST|Login (returns access + refresh)
+|/auth/refresh|POST|Refresh access token
+|/auth/sign_out|POST|Invalidate refresh token
+|/auth/password/forgot|POST|Request password reset link
+|/auth/password/reset|POST|Reset password with token
 
-Learn more:
+### JWT Claims: sub, role, iat, exp, jti
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+⸻
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🛡️ Quality & Security
+
+- Linting
+- Prettier + ESLint for frontend
+- RuboCop for backend
+- Testing
+- Angular: Vitest/Jest unit tests + Playwright component/e2e tests
+- Rails: RSpec request and model specs
+- CI/CD
+- Use nx affected commands to run only impacted tests, lint, and builds
+- Secrets
+- Keep secrets in .env (ignored from git)
+- Configure JWT keys, DB credentials, and mailer settings via ENV
+
+⸻
+
+## 📚 Documentation
+
+- Copilot Instructions: see .github/copilot-instructions.md
+- Decision Records: docs/decision-records/ for architectural decisions
+- API Docs: apps/api/docs (OpenAPI/Swagger planned)
+
+⸻
+
+## ✅ Roadmap
+
+### S1 (MVP Auth & RBAC)
+
+- User model & JWT auth
+- Pundit policies
+- Angular auth flow with SignalStore
+
+### S2 (Catalog & Checkout)
+
+- Products, categories, variants
+- Shopping cart & Stripe checkout
+- Orders & fulfillment
+
+### S3 (Operations & Service)
+
+- Coupons & discounts
+- Order management (admin/editor/service)
+- Customer service dashboard

@@ -141,6 +141,51 @@ Revokes the provided refresh token, preventing future use.
 }
 ```
 
+### POST `/auth/password/forgot`
+
+Initiates the password reset flow. Always responds with success to avoid leaking
+user existence.
+
+```jsonc
+// Request body
+{
+	"email": "user@example.com"
+}
+
+// Response 200 (sent regardless of account existence)
+{ "success": true }
+```
+
+### POST `/auth/password/reset`
+
+Completes a password reset using the token delivered via email.
+
+```jsonc
+// Request body
+{
+	"token": "<reset token>",
+	"password": "Supersafe01!"
+}
+
+// Response 200
+{ "success": true }
+
+// Response 400 (invalid or expired token)
+{
+	"error": {
+		"code": "invalid_or_expired_token",
+		"message": "Reset token is invalid or has expired."
+	}
+}
+
+// Response 422 (password fails validation)
+{
+	"errors": [
+		{ "field": "password", "message": "is too short (minimum is 10 characters)" }
+	]
+}
+```
+
 ## Running the Specs
 
 Use the Nx target to run linting and tests for the API:

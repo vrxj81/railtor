@@ -1,0 +1,77 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "api",
+  "projectType": "application",
+  "sourceRoot": "apps/api",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bin/rails server",
+        "cwd": "apps/api",
+        "envFile": "apps/api/.env.development.local",
+        "forwardAllArgs": true
+      },
+      "cache": false,
+      "configurations": {
+        "production": {
+          "envFile": null
+        }
+      }
+    },
+    "db:up": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose up postgres",
+        "forwardAllArgs": true
+      },
+      "cache": false
+    },
+    "db:migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bin/rails db:migrate",
+        "cwd": "apps/api",
+        "envFile": "apps/api/.env.development.local"
+      },
+      "cache": false
+    },
+    "db:test:prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bin/rails db:test:prepare",
+        "cwd": "apps/api",
+        "envFile": "apps/api/.env.test.local"
+      },
+      "cache": false
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bundle exec rspec",
+        "cwd": "apps/api",
+        "envFile": "apps/api/.env.test.local"
+      },
+      "outputs": [],
+      "cache": false
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prettier --write \"app/**/*.rb\" \"config/**/*.rb\" \"spec/**/*.rb\" \"db/**/*.rb\"",
+        "cwd": "apps/api"
+      },
+      "outputs": [],
+      "cache": false
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bundle exec rubocop",
+        "cwd": "apps/api"
+      }
+    }
+  },
+  "tags": ["type:api", "scope:backend"],
+  "implicitDependencies": []
+}

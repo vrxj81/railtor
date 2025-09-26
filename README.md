@@ -9,20 +9,20 @@ The MVP scope starts with authentication, authorization, and role management (ad
 
 - Monorepo Tooling: Nx
 - Backend: Rails 8 (API-only)
-    - Devise for authentication (JWT)
-    - Pundit for authorization
-    - PostgreSQL for persistence
-    - RSpec for testing
-- **Frontend**: Angular 20  
-    - Zoneless change detection (`provideZoneChangeDetection`)  
-    - Standalone components with ApplicationConfig  
-    - Angular Signals for state and derived data  
-    - NgRx **SignalStore** for feature state management  
-    - **CASL for role-based UI** (`@casl/ability`, `@casl/angular`) to mirror API permissions on the client
+  - Devise for authentication (JWT)
+  - Pundit for authorization
+  - PostgreSQL for persistence
+  - RSpec for testing
+- **Frontend**: Angular 20
+  - Zoneless change detection (`provideZoneChangeDetection`)
+  - Standalone components with ApplicationConfig
+  - Angular Signals for state and derived data
+  - NgRx **SignalStore** for feature state management
+  - **CASL for role-based UI** (`@casl/ability`, `@casl/angular`) to mirror API permissions on the client
 - Standards:
-    - Commit messages, generators, formatting, and linting follow Nx defaults
-    - Prettier (TS) + ESLint rules for frontend
-    - RuboCop for backend
+  - Commit messages, generators, formatting, and linting follow Nx defaults
+  - Prettier (TS) + ESLint rules for frontend
+  - RuboCop for backend
 
 ## 🗂️ Project Structure
 
@@ -54,28 +54,28 @@ packages/
 ### Features
 
 1. Authentication & Authorization
-    - Sign up, sign in, sign out
-    - JWT access tokens (15m) + rotating refresh tokens (14d)
-    - Password reset flow (forgot + reset)
-    - **Server-side authorization** with Pundit  
-    - **Client-side role-based UI** with CASL (guards, structural directives)
+   - Sign up, sign in, sign out
+   - JWT access tokens (15m) + rotating refresh tokens (14d)
+   - Password reset flow (forgot + reset)
+   - **Server-side authorization** with Pundit
+   - **Client-side role-based UI** with CASL (guards, structural directives)
 
 2. Security
-    - Rate limiting with rack-attack
-    - Brute force lockout (5 failed attempts → temporary lock)
-    - Audit log for sign-in, reset, and role-related actions
+   - Rate limiting with rack-attack
+   - Brute force lockout (5 failed attempts → temporary lock)
+   - Audit log for sign-in, reset, and role-related actions
 
 3. Frontend UX
-    - Auth screens (sign in/up/forgot/reset)  
-    - **CASL-powered directives** to hide/disable UI by ability  
-    - Tokens via SignalStore + sessionStorage  
-    - Interceptors for auth headers and refresh logic
+   - Auth screens (sign in/up/forgot/reset)
+   - **CASL-powered directives** to hide/disable UI by ability
+   - Tokens via SignalStore + sessionStorage
+   - Interceptors for auth headers and refresh logic
 
 4. Backend
-    - User model with roles (enum)
-    - Devise for auth, JWT tokens for API
-    - Pundit policies for resource access
-    - Request specs for auth flows
+   - User model with roles (enum)
+   - Devise for auth, JWT tokens for API
+   - Pundit policies for resource access
+   - Request specs for auth flows
 
 ⸻
 
@@ -86,7 +86,7 @@ packages/
 - Node.js 20+
 - yarn
 - Ruby 3.4+
-- PostgreSQL 15+
+- PostgreSQL 15+ (or Docker)
 - Nx CLI (npm i -g nx)
 
 ## Install
@@ -103,7 +103,13 @@ yarn install
 cd apps/api
 bundle install
 
-# Setup DB
+# Spin up PostgreSQL for local dev (optional, requires Docker)
+cd ../..
+docker compose up -d postgres
+
+# Setup DB (runs against dockerized Postgres if running)
+cd apps/api
+cp .env.development.sample .env.development.local # optional, then tweak creds
 bin/rails db:setup
 ```
 
@@ -133,18 +139,16 @@ nx run-many --target=serve --projects=web,api
 
 ## 🔄 API Contract (Auth v1)
 
-| Endpoint                | Method | Description |
-|------------------------|--------|-------------|
-| `/auth/sign_up`         | POST   | Register new user |
+| Endpoint                | Method | Description                      |
+| ----------------------- | ------ | -------------------------------- |
+| `/auth/sign_up`         | POST   | Register new user                |
 | `/auth/sign_in`         | POST   | Login (returns access + refresh) |
-| `/auth/refresh`         | POST   | Refresh access token |
-| `/auth/sign_out`        | POST   | Invalidate refresh token |
-| `/auth/password/forgot` | POST   | Request password reset link |
-| `/auth/password/reset`  | POST   | Reset password with token |
-
+| `/auth/refresh`         | POST   | Refresh access token             |
+| `/auth/sign_out`        | POST   | Invalidate refresh token         |
+| `/auth/password/forgot` | POST   | Request password reset link      |
+| `/auth/password/reset`  | POST   | Reset password with token        |
 
 JWT Claims: `sub`, `role`, `iat`, `exp`, `jti`
-
 
 ## 🛡️ Quality & Security
 

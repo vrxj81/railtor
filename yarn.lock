@@ -1455,16 +1455,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prettier/plugin-ruby@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "@prettier/plugin-ruby@npm:4.0.4"
+  peerDependencies:
+    prettier: ^3.0.0
+  checksum: 10c0/7567d7f87fe807f7a90fb4eba7a91d25a1843e19de09289412ba0420e25fadea9840085b495c54212249bb418fcd146d53b105c0e4e57990c5235326bd7c6b01
+  languageName: node
+  linkType: hard
+
 "@railtor/source@workspace:.":
   version: 0.0.0-use.local
   resolution: "@railtor/source@workspace:."
   dependencies:
     "@nx/js": "npm:21.5.3"
+    "@prettier/plugin-ruby": "npm:^4.0.4"
     "@swc-node/register": "npm:~1.9.1"
     "@swc/core": "npm:~1.5.7"
     "@swc/helpers": "npm:~0.5.11"
     nx: "npm:21.5.3"
-    prettier: "npm:^2.6.2"
+    prettier: "npm:^3.3.2"
     tslib: "npm:^2.3.0"
     typescript: "npm:~5.9.2"
   languageName: unknown
@@ -2948,12 +2958,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.6.2":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
+"prettier@npm:^3.3.2":
+  version: 3.6.2
+  resolution: "prettier@npm:3.6.2"
   bin:
-    prettier: bin-prettier.js
-  checksum: 10c0/463ea8f9a0946cd5b828d8cf27bd8b567345cf02f56562d5ecde198b91f47a76b7ac9eae0facd247ace70e927143af6135e8cf411986b8cb8478784a4d6d724a
+    prettier: bin/prettier.cjs
+  checksum: 10c0/488cb2f2b99ec13da1e50074912870217c11edaddedeadc649b1244c749d15ba94e846423d062e2c4c9ae683e2d65f754de28889ba06e697ac4f988d44f45812
   languageName: node
   linkType: hard
 

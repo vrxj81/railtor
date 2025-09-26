@@ -13,6 +13,20 @@ permissions:
 jobs:
   main:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: api_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,6 +34,18 @@ jobs:
           fetch-depth: 0
 
       - run: corepack enable
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.6'
+          bundler-cache: true
+          working-directory: apps/api
+
+      - name: Ensure test env file exists
+        run: |
+          if [ ! -f apps/api/.env.test.local ]; then
+            cp apps/api/.env.test.sample apps/api/.env.test.local
+          fi
 
       # This enables task distribution via Nx Cloud
       # Run this command as early as possible, before dependencies are installed
@@ -35,9 +61,12 @@ jobs:
 
       - run: yarn install --immutable
 
+      - name: Prepare test database
+        run: yarn nx run api:db:test:prepare
+
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-      # - run: yarn nx-cloud record -- echo Hello World
-      - run: yarn nx run-many -t lint test build typecheck
+      - run: yarn nx-cloud record -- yarn nx format:check
+      - run: yarn nx affected -t lint test build typecheck
       # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
       - run: yarn nx fix-ci
         if: always()

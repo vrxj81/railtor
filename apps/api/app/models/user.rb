@@ -3,6 +3,8 @@ class User < ApplicationRecord
 
   ROLES = { admin: 0, editor: 1, service: 2, customer: 3 }.freeze
 
+  has_many :refresh_tokens, dependent: :destroy
+
   devise :database_authenticatable,
          :recoverable,
          :confirmable,

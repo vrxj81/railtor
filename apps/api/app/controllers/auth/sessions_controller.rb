@@ -2,12 +2,17 @@ require "securerandom"
 
 module Auth
   class SessionsController < ApplicationController
-  skip_before_action :authenticate_user!, raise: false
+    skip_before_action :authenticate_user!, raise: false
 
     def create
       user = find_user
 
       if user.nil?
+        AuditLogger.log(
+          event: "auth.sign_in.failed",
+          ip: request.remote_ip,
+          metadata: { email: sign_in_params[:email].to_s.strip.downcase }
+        )
         render_invalid_credentials and return
       end
 
@@ -16,6 +21,13 @@ module Auth
       end
 
       unless authenticated
+        AuditLogger.log(
+          event: "auth.sign_in.failed",
+          user:,
+          ip: request.remote_ip,
+          metadata: { locked: user.access_locked? }
+        )
+
         if user.access_locked?
           render_error(
             code: "account_locked",
@@ -45,6 +57,8 @@ module Auth
         expires_at: issued_at + JwtTokenService.refresh_token_expires_in
       )
 
+      AuditLogger.log(event: "auth.sign_in.success", user:, ip: request.remote_ip)
+
       render json: {
                accessToken: access_token,
                refreshToken: refresh_token,
@@ -69,6 +83,8 @@ module Auth
       end
 
       token.revoke!
+
+      AuditLogger.log(event: "auth.sign_out", user: token.user, ip: request.remote_ip)
 
       render json: { success: true }, status: :ok
     rescue ActionController::ParameterMissing

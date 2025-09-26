@@ -10,6 +10,7 @@ end
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require "rspec/rails"
+require "active_support/testing/time_helpers"
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -37,6 +38,12 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
+  config.before do
+    if defined?(Rack::Attack)
+      Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    end
+  end
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [Rails.root.join("spec/fixtures")]
 

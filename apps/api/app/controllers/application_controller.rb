@@ -56,8 +56,8 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_user!
-  @current_user = nil
-  token = bearer_token
+    @current_user = nil
+    token = bearer_token
 
     if token.blank?
       render_error(

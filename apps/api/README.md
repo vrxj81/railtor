@@ -10,6 +10,12 @@ available under the `/auth` namespace and respond with JSON.
   `{ sub, role, iat, exp, jti }`.
 - **Refresh tokens** expire after 14 days, are rotated on every use, and are
   persisted server-side hashed via SHA-256.
+- **Authentication endpoints** are rate-limited to 10 requests per minute per
+	IP and accounts automatically unlock 15 minutes after hitting the lockout
+	threshold.
+- **CORS** is only enabled in development to allow the Angular dev server at
+	`http://localhost:4200`; production serves the built frontend from
+	`apps/api/public`.
 - All responses use snake_case error codes inside an `error` envelope when
   requests fail (see individual endpoints for details).
 

@@ -31,7 +31,7 @@ RSpec.describe "Auth API", type: :request do
 
       post "/auth/sign_up", params: payload.to_json, headers: headers
 
-  expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:unprocessable_content)
       body = JSON.parse(response.body)
       expect(body["errors"]).to be_an(Array)
     end
@@ -88,6 +88,26 @@ RSpec.describe "Auth API", type: :request do
       expect(body.dig("error", "code")).to eq("account_locked")
       expect(user.reload.access_locked?).to be(true)
     end
+
+    it "automatically unlocks after fifteen minutes" do
+      5.times do
+        post "/auth/sign_in",
+             params: { email: user.email, password: "WrongPassword01!" }.to_json,
+             headers: headers
+      end
+
+      expect(response).to have_http_status(:locked)
+
+      travel_to(Time.current + 16.minutes) do
+        post "/auth/sign_in",
+             params: { email: user.email, password: password }.to_json,
+             headers: headers
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      expect(user.reload.access_locked?).to be(false)
+    end
   end
 
   describe "POST /auth/refresh" do
@@ -121,6 +141,36 @@ RSpec.describe "Auth API", type: :request do
       expect(JSON.parse(response.body).dig("error", "code")).to eq(
         "invalid_refresh_token"
       )
+    end
+  end
+
+  describe "rate limiting" do
+    let!(:user) do
+      User.create!(
+        email: "ratelimit@example.com",
+        password: password,
+        confirmed_at: Time.current,
+        role: :customer
+      )
+    end
+
+    before do
+      Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    end
+
+    it "returns 429 after exceeding the request budget" do
+      payload = { email: user.email, password: password }
+
+      10.times do
+        post "/auth/sign_in", params: payload.to_json, headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      post "/auth/sign_in", params: payload.to_json, headers: headers
+
+      expect(response).to have_http_status(:too_many_requests)
+      body = JSON.parse(response.body)
+      expect(body.dig("error", "code")).to eq("rate_limited")
     end
   end
 

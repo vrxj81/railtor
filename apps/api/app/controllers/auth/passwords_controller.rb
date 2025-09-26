@@ -1,6 +1,6 @@
 module Auth
   class PasswordsController < ApplicationController
-  skip_before_action :authenticate_user!, raise: false
+    skip_before_action :authenticate_user!, raise: false
 
     def forgot
       email = params[:email].to_s.strip.downcase
@@ -9,6 +9,12 @@ module Auth
         user = User.find_by(email: email)
         user&.send_reset_password_instructions
       end
+
+      AuditLogger.log(
+        event: "auth.password.reset_requested",
+        ip: request.remote_ip,
+        metadata: { email: email.presence }
+      )
 
       render json: { success: true }, status: :ok
     end

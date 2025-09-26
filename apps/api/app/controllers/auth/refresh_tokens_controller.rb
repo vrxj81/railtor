@@ -2,7 +2,7 @@ require "securerandom"
 
 module Auth
   class RefreshTokensController < ApplicationController
-  skip_before_action :authenticate_user!, raise: false
+    skip_before_action :authenticate_user!, raise: false
 
     def create
       raw_refresh = params.require(:refreshToken)
@@ -27,6 +27,8 @@ module Auth
         token.revoke!
         new_tokens = issue_rotated_tokens(user:, issued_at:)
       end
+
+      AuditLogger.log(event: "auth.refresh", user:, ip: request.remote_ip)
 
       render json: new_tokens, status: :ok
     rescue ActionController::ParameterMissing

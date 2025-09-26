@@ -2,6 +2,8 @@ require "securerandom"
 
 module Auth
   class RefreshTokensController < ApplicationController
+  skip_before_action :authenticate_user!, raise: false
+
     def create
       raw_refresh = params.require(:refreshToken)
       payload = JwtTokenService.decode!(raw_refresh)

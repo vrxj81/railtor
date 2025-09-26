@@ -15,6 +15,44 @@ available under the `/auth` namespace and respond with JSON.
 
 ## Endpoints
 
+### GET `/settings`
+
+Returns application-level operational settings. Requires an authenticated admin
+access token.
+
+```jsonc
+// Headers
+// Authorization: Bearer <access jwt>
+
+// Response 200
+{
+	"application": {
+		"name": "Railtor",
+		"version": "0.0.1"
+	},
+	"features": {
+		"authentication": true,
+		"password_reset": true
+	}
+}
+
+// Response 401 (no/invalid token)
+{
+	"error": {
+		"code": "unauthenticated",
+		"message": "Authorization header is missing or invalid."
+	}
+}
+
+// Response 403 (non-admin roles)
+{
+	"error": {
+		"code": "not_authorized",
+		"message": "You are not authorized to perform this action."
+	}
+}
+```
+
 ### POST `/auth/sign_up`
 
 Registers a new user as a `customer`.

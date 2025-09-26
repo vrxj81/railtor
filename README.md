@@ -86,7 +86,7 @@ packages/
 - Node.js 20+
 - yarn
 - Ruby 3.4+
-- PostgreSQL 15+
+- PostgreSQL 15+ (or Docker)
 - Nx CLI (npm i -g nx)
 
 ## Install
@@ -103,7 +103,13 @@ yarn install
 cd apps/api
 bundle install
 
-# Setup DB
+# Spin up PostgreSQL for local dev (optional, requires Docker)
+cd ../..
+docker compose up -d postgres
+
+# Setup DB (runs against dockerized Postgres if running)
+cd apps/api
+cp .env.development.sample .env.development.local # optional, then tweak creds
 bin/rails db:setup
 ```
 

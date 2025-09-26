@@ -9,7 +9,7 @@
       "options": {
         "command": "bin/rails server",
         "cwd": "apps/api",
-  "envFile": "apps/api/.env.development.local",
+        "envFile": "apps/api/.env.development.local",
         "forwardAllArgs": true
       },
       "cache": false,
@@ -32,7 +32,7 @@
       "options": {
         "command": "bin/rails db:migrate",
         "cwd": "apps/api",
-  "envFile": "apps/api/.env.development.local"
+        "envFile": "apps/api/.env.development.local"
       },
       "cache": false
     },
@@ -41,7 +41,7 @@
       "options": {
         "command": "bin/rails db:test:prepare",
         "cwd": "apps/api",
-  "envFile": "apps/api/.env.test.local"
+        "envFile": "apps/api/.env.test.local"
       },
       "cache": false
     },
@@ -50,7 +50,7 @@
       "options": {
         "command": "bundle exec rspec",
         "cwd": "apps/api",
-  "envFile": "apps/api/.env.test.local"
+        "envFile": "apps/api/.env.test.local"
       },
       "outputs": [],
       "cache": false

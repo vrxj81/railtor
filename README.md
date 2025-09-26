@@ -54,7 +54,6 @@ packages/
 ### Features
 
 1. Authentication & Authorization
-
    - Sign up, sign in, sign out
    - JWT access tokens (15m) + rotating refresh tokens (14d)
    - Password reset flow (forgot + reset)
@@ -62,13 +61,11 @@ packages/
    - **Client-side role-based UI** with CASL (guards, structural directives)
 
 2. Security
-
    - Rate limiting with rack-attack
    - Brute force lockout (5 failed attempts → temporary lock)
    - Audit log for sign-in, reset, and role-related actions
 
 3. Frontend UX
-
    - Auth screens (sign in/up/forgot/reset)
    - **CASL-powered directives** to hide/disable UI by ability
    - Tokens via SignalStore + sessionStorage

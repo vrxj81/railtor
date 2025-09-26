@@ -35,6 +35,12 @@ jobs:
 
       - run: yarn install --immutable
 
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       - run: yarn nx-cloud record -- yarn nx format:check
       - run: yarn nx affected -t lint test build typecheck

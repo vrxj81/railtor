@@ -7,11 +7,11 @@ available under the `/auth` namespace and respond with JSON.
 ## Authentication Overview
 
 - **Access tokens** expire after 5 minutes and include the claims
-	`{ sub, role, iat, exp, jti }`.
+  `{ sub, role, iat, exp, jti }`.
 - **Refresh tokens** expire after 14 days, are rotated on every use, and are
-	persisted server-side hashed via SHA-256.
+  persisted server-side hashed via SHA-256.
 - All responses use snake_case error codes inside an `error` envelope when
-	requests fail (see individual endpoints for details).
+  requests fail (see individual endpoints for details).
 
 ## Endpoints
 

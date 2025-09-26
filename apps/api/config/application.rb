@@ -29,6 +29,8 @@ module Api
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+  config.x.web_app_url = ENV.fetch("WEB_APP_URL", "http://localhost:4200")
+
     config.generators do |g|
       g.test_framework :rspec,
                        fixtures: false,

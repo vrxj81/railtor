@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     post :sign_in, to: "sessions#create"
     post :refresh, to: "refresh_tokens#create"
     post :sign_out, to: "sessions#destroy"
+    post "password/forgot", to: "passwords#forgot"
+    post "password/reset", to: "passwords#reset"
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

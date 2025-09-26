@@ -2,6 +2,8 @@ require "securerandom"
 
 module Auth
   class SessionsController < ApplicationController
+  skip_before_action :authenticate_user!, raise: false
+
     def create
       user = find_user
 

@@ -1,5 +1,7 @@
 module Auth
   class RegistrationsController < ApplicationController
+  skip_before_action :authenticate_user!, raise: false
+
     def create
       user = User.new(sign_up_params)
       user.role = :customer

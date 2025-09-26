@@ -1,5 +1,7 @@
 module Auth
   class PasswordsController < ApplicationController
+  skip_before_action :authenticate_user!, raise: false
+
     def forgot
       email = params[:email].to_s.strip.downcase
 

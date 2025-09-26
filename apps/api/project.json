@@ -9,11 +9,11 @@
       "options": {
         "command": "bin/rails server",
         "cwd": "apps/api",
-        "envFile": ".env.development.local",
+  "envFile": "apps/api/.env.development.local",
         "forwardAllArgs": true
-  },
-  "cache": false,
-  "configurations": {
+      },
+      "cache": false,
+      "configurations": {
         "production": {
           "envFile": null
         }
@@ -32,7 +32,7 @@
       "options": {
         "command": "bin/rails db:migrate",
         "cwd": "apps/api",
-        "envFile": ".env.development.local"
+  "envFile": "apps/api/.env.development.local"
       },
       "cache": false
     },
@@ -41,7 +41,7 @@
       "options": {
         "command": "bin/rails db:test:prepare",
         "cwd": "apps/api",
-        "envFile": ".env.test.local"
+  "envFile": "apps/api/.env.test.local"
       },
       "cache": false
     },
@@ -50,7 +50,16 @@
       "options": {
         "command": "bundle exec rspec",
         "cwd": "apps/api",
-        "envFile": ".env.test.local"
+  "envFile": "apps/api/.env.test.local"
+      },
+      "outputs": [],
+      "cache": false
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "prettier --write \"app/**/*.rb\" \"config/**/*.rb\" \"spec/**/*.rb\" \"db/**/*.rb\"",
+        "cwd": "apps/api"
       },
       "outputs": [],
       "cache": false

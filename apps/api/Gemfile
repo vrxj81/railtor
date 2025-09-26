@@ -54,4 +54,5 @@ group :development, :test do
 
   gem "rspec-rails"
   gem "dotenv-rails", require: "dotenv/load"
+  gem "syntax_tree", require: false
 end

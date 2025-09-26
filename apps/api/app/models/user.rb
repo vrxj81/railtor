@@ -1,12 +1,7 @@
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
 
-  ROLES = {
-    admin: 0,
-    editor: 1,
-    service: 2,
-    customer: 3
-  }.freeze
+  ROLES = { admin: 0, editor: 1, service: 2, customer: 3 }.freeze
 
   devise :database_authenticatable,
          :recoverable,

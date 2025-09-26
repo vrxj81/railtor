@@ -24,7 +24,9 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = Rails.application.credentials.dig(:mailers, :default_sender) || "no-reply@railtor.local"
+  config.mailer_sender =
+    Rails.application.credentials.dig(:mailers, :default_sender) ||
+      "no-reply@railtor.local"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
@@ -58,12 +60,12 @@ Devise.setup do |config|
   # Configure which authentication keys should be case-insensitive.
   # These keys will be downcased upon creating or modifying a user and when used
   # to authenticate or find a user. Default is :email.
-  config.case_insensitive_keys = [ :email ]
+  config.case_insensitive_keys = [:email]
 
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
   # modifying a user and when used to authenticate or find a user. Default is :email.
-  config.strip_whitespace_keys = [ :email ]
+  config.strip_whitespace_keys = [:email]
 
   # Tell if authentication through request.params is enabled. True by default.
   # It can be set to an array that will enable params authentication only for the
@@ -97,7 +99,7 @@ Devise.setup do |config|
   # Notice that if you are skipping storage for all authentication paths, you
   # may want to disable generating routes to Devise's sessions controller by
   # passing skip: :sessions to `devise_for` in your config/routes.rb
-  config.skip_session_storage = [ :http_auth ]
+  config.skip_session_storage = [:http_auth]
 
   # By default, Devise cleans up the CSRF token on authentication to
   # avoid CSRF token fixation attacks. This means that, when using AJAX
@@ -266,18 +268,22 @@ Devise.setup do |config|
   config.navigational_formats = []
 
   config.jwt do |jwt|
-    secret = Rails.application.credentials.dig(:devise, :jwt_secret_key) || ENV["DEVISE_JWT_SECRET_KEY"] || Rails.application.secret_key_base
+    secret =
+      Rails.application.credentials.dig(:devise, :jwt_secret_key) ||
+        ENV["DEVISE_JWT_SECRET_KEY"] || Rails.application.secret_key_base
 
     jwt.secret = secret
-    jwt.dispatch_requests = [ [ "POST", %r{^/users/sign_in$} ] ]
-    jwt.revocation_requests = [ [ "DELETE", %r{^/users/sign_out$} ] ]
-    jwt.request_formats = { user: [ :json ] }
+    jwt.dispatch_requests = [["POST", %r{^/users/sign_in$}]]
+    jwt.revocation_requests = [["DELETE", %r{^/users/sign_out$}]]
+    jwt.request_formats = { user: [:json] }
     jwt.expiration_time = 5.minutes
 
     # Placeholder for the upcoming rotating refresh token flow. Once the
     # refresh endpoint is implemented we will enable rotation and persist
     # refresh tokens server-side to prevent replay attacks.
-    jwt.refresh_by_access_allowed = false if jwt.respond_to?(:refresh_by_access_allowed=)
+    jwt.refresh_by_access_allowed = false if jwt.respond_to?(
+      :refresh_by_access_allowed=
+    )
   end
 
   # The default HTTP method used to sign out a resource. Default is :delete.

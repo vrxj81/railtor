@@ -187,6 +187,7 @@ GEM
     pg (1.6.2-arm64-darwin)
     pp (0.6.2)
       prettyprint
+    prettier_print (1.2.1)
     prettyprint (0.2.0)
     prism (1.5.1)
     psych (5.2.6)
@@ -318,6 +319,8 @@ GEM
       net-ssh (>= 2.8.0)
       ostruct
     stringio (3.1.7)
+    syntax_tree (6.3.0)
+      prettier_print (>= 1.2.0)
     thor (1.4.0)
     thruster (0.1.15-arm64-darwin)
     timeout (0.4.3)
@@ -361,6 +364,7 @@ DEPENDENCIES
   solid_cable
   solid_cache
   solid_queue
+  syntax_tree
   thruster
   tzinfo-data
 

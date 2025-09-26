@@ -23,7 +23,6 @@ default: &default
   username: <%= ENV.fetch("DB_USERNAME", "postgres") %>
   password: <%= ENV["DB_PASSWORD"] %>
 
-
 development:
   <<: *default
   database: <%= ENV.fetch("DB_NAME", "api_development") %>

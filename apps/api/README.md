@@ -11,11 +11,51 @@ available under the `/auth` namespace and respond with JSON.
 - **Refresh tokens** expire after 14 days, are rotated on every use, and are
   persisted server-side hashed via SHA-256.
 - **Authentication endpoints** are rate-limited to 10 requests per minute per
-	IP and accounts automatically unlock 15 minutes after hitting the lockout
-	threshold.
+  IP and accounts automatically unlock 15 minutes after hitting the lockout
+  threshold.
 - **CORS** is only enabled in development to allow the Angular dev server at
-	`http://localhost:4200`; production serves the built frontend from
-	`apps/api/public`.
+  `http://localhost:4200`; production serves the built frontend from
+  `apps/api/public`.
+
+## Seed data
+
+`rails db:seed` provisions default platform accounts using environment-provided
+passwords. Set the following variables before running the task:
+
+- `ADMIN_PASSWORD` (required) — optional `ADMIN_EMAIL`, defaults to
+  `admin@railtor.local`
+- `EDITOR_PASSWORD` (required) — optional `EDITOR_EMAIL`, defaults to
+  `editor@railtor.local`
+- `SERVICE_PASSWORD` (required) — optional `SERVICE_EMAIL`, defaults to
+  `service@railtor.local`
+
+The seed script is idempotent; repeated runs will upsert the three users and
+reset lockout counters so the accounts remain accessible.
+
+### CI/CD example
+
+For GitHub Actions you can inject the required variables via workflow secrets:
+
+```yaml
+env:
+	ADMIN_EMAIL: admin@railtor.local
+	ADMIN_PASSWORD: ${{ secrets.API_ADMIN_PASSWORD }}
+	EDITOR_EMAIL: editor@railtor.local
+	EDITOR_PASSWORD: ${{ secrets.API_EDITOR_PASSWORD }}
+	SERVICE_EMAIL: service@railtor.local
+	SERVICE_PASSWORD: ${{ secrets.API_SERVICE_PASSWORD }}
+
+steps:
+	- name: Prepare database
+		run: |
+			bundle exec rails db:prepare
+			bundle exec rails db:seed
+```
+
+For containerised deployments, mount the variables as environment entries in
+Kubernetes or Docker Compose and invoke `bundle exec rails db:seed` during the
+release pipeline.
+
 - All responses use snake_case error codes inside an `error` envelope when
   requests fail (see individual endpoints for details).
 

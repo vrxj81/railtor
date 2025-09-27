@@ -139,6 +139,8 @@ nx run-many --target=serve --projects=web,api
 
 ## 🔄 API Contract (Auth v1)
 
+> Detailed OpenAPI 3.1 documentation lives at `apps/api/docs/openapi.yaml`. Load it in Swagger UI, Redocly, or VS Code's OpenAPI preview to explore request/response schemas and error shapes.
+
 | Endpoint                | Method | Description                      |
 | ----------------------- | ------ | -------------------------------- |
 | `/auth/sign_up`         | POST   | Register new user                |
@@ -170,7 +172,7 @@ JWT Claims: `sub`, `role`, `iat`, `exp`, `jti`
 
 - Copilot Instructions: see .github/copilot-instructions.md
 - Decision Records: docs/decision-records/ for architectural decisions
-- API Docs: apps/api/docs (OpenAPI/Swagger planned)
+- API Docs: apps/api/docs/openapi.yaml (Auth v1 spec)
 
 ⸻
 
